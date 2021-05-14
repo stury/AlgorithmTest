@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SyncExample: Example, ExampleProtocol {
+struct SyncExample: ExampleProtocol {
  
     func process(_ iterations: Int) -> (TimeInterval, TimeInterval) {
         let metadata = generateMetaData(iterations)

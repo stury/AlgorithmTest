@@ -2,12 +2,6 @@
 
 import Foundation
 
-//struct Metadata {
-//    let shortName : String
-//    let name : String
-//    let id : String
-//}
-//
 func dedupe(_ filtered: [Metadata]) -> [Metadata] {
     var lookup = Set<String?>()
     var deduped = [Metadata]()
@@ -31,32 +25,17 @@ func dedupe2(_ filtered: [Metadata]) -> [Metadata] {
 }
 
 let metadata = generateMetaData(1000)
-//let concurrent = Async( label: "dedupe" )
-//concurrent.async( concurrent.createWorkItem { _ = dedupe(metadata) } )
-//concurrent.async( concurrent.createWorkItem { _ = dedupe2(metadata) } )
-//concurrent.waitForGroupToFinish()
 
-//print(time { _ = dedupe(metadata)  })
-//print(time { _ = dedupe2(metadata) })
+let concurrent = Async( label: "dedupe" )
+var timeInterval1 : TimeInterval = 0.0
+var timeInterval2 : TimeInterval = 0.0
 
-let queue = DispatchQueue(label: "com.tury.concurrent", qos: .userInitiated, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)
-let group = DispatchGroup()
+concurrent.async( concurrent.createWorkItem { timeInterval1 = measureTime { _ = dedupe(metadata) } } )
+concurrent.async( concurrent.createWorkItem { timeInterval2 = measureTime { _ = dedupe2(metadata)} } )
+sleep(50)
+concurrent.waitForGroupToFinish()
 
-func createWorkItem( closure: @escaping(()->Void) ) -> DispatchWorkItem {
-    let result = DispatchWorkItem {
-        let result = measureTime {
-            closure()
-        }
-        DispatchQueue.main.async {
-            print(result)
-        }
-    }
-    return result
-}
-
-queue.async(execute: createWorkItem { _ = dedupe(metadata) } )
-queue.async(execute: createWorkItem { _ = dedupe2(metadata) } )
-group.wait()
-
+print( timeInterval1 )
+print( timeInterval2 )
 
 //: [Next](@next)

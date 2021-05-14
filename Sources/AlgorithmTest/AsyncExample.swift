@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AsyncExample : Example, ExampleProtocol {
+struct AsyncExample : ExampleProtocol {
 
     func process(_ iterations: Int) -> (TimeInterval, TimeInterval) {
         let async = Async(label: "example" )
